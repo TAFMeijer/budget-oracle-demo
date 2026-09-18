@@ -6,8 +6,9 @@ Rate" data set.
 Get the CSV from https://data-service.theglobalfund.org/downloads (Data Set tab, "Grant Budgets -
 Reference Rate"). With no argument the newest grant_budgets_reference_rate_*.csv in data/ or
 ~/Downloads is used. The Global Fund generates that file from its public API
-(https://data-service.theglobalfund.org/api, data set GrantBudget_ReferenceRate); the one thing
-added here from the API is the Global Fund's own portfolio region of each country.
+(https://data-service.theglobalfund.org/api, data set GrantBudget_ReferenceRate). The one thing
+added here is the Global Fund grant-management region of each country (WCA, HIA1, HIA2,
+MENASEA, EECA, LAC, Asia), from data/gf_regions.csv — the published file has no such column.
 
 One row per implementation period x module/intervention x cost category x year, in US$ at the
 Global Fund reference rate. Amounts are budgets — what a grant plans to spend — not expenditure
@@ -22,11 +23,10 @@ import sys
 from pathlib import Path
 
 import pandas as pd
-import requests
 
 HERE = Path(__file__).resolve().parent
 OUT = HERE / "gf_budgets.sqlite"
-API = "https://fetch.theglobalfund.org/v4.2/odata"
+REGIONS = HERE / "gf_regions.csv"
 
 COLUMNS = {                       # CSV header -> column here (the file's headers end in a stray "1")
     "GeographyName1": "country", "Continent1": "continent", "SubContinent1": "subcontinent",
@@ -56,23 +56,12 @@ def find_csv() -> Path:
 
 
 def gf_regions() -> dict[str, str]:
-    """Country -> the Global Fund's portfolio region, from the public API's portfolio view."""
-    try:
-        rows = requests.get(f"{API}/Geographies_PortfolioView", params={"$top": 5000}, timeout=120).json()["value"]
-    except (requests.RequestException, ValueError, KeyError) as e:
-        print(f"  portfolio regions unavailable ({e.__class__.__name__}); gf_region will be 'Unspecified'")
+    """Country -> Global Fund grant-management region, from the mapping file next to this script."""
+    if not REGIONS.exists():
+        print(f"  {REGIONS.name} not found; gf_region will be 'Unspecified'")
         return {}
-    by_id = {g["id"]: g for g in rows}
-    out = {}
-    for g in rows:
-        if g.get("level") in ("Country", "Multicountry", "Subnational"):
-            p, seen = by_id.get(g.get("parentId")), set()
-            while p and p.get("level") is not None and p["id"] not in seen:   # climb to the region (level-less)
-                seen.add(p["id"])
-                p = by_id.get(p.get("parentId"))
-            if p and p["name"] != "PORTFOLIO_HIERARCHY":
-                out[g["name"]] = p["name"]
-    return out
+    table = pd.read_csv(REGIONS)
+    return dict(zip(table["country"], table["gf_region"]))
 
 
 def main() -> None:
@@ -92,7 +81,6 @@ def main() -> None:
         df[col] = df[col].fillna("Unspecified")
     for col in ("continent", "subcontinent"):                       # multicountry grants have neither
         df[col] = df[col].fillna("Multicountry")
-    print("Global Fund portfolio regions (API) …")
     regions = gf_regions()
     df["gf_region"] = df["country"].map(regions).fillna("Unspecified")
     df = df[ORDER]

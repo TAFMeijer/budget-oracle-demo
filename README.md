@@ -47,7 +47,7 @@ app without any model for a look around.
 
 `data/build_gf_budgets.py` turns the Global Fund's published CSV into one table,
 `grant_budgets`, with plain column names: country, continent, sub-continent and the Global
-Fund's portfolio region; grant, implementation period, status, grant cycle and grant type;
+Fund's grant-management region (from `data/gf_regions.csv`; the published file has none); grant, implementation period, status, grant cycle and grant type;
 principal recipient, its type and the lead implementer; component, module and intervention;
 investment landscape level 1 and 2 and cost category; year; budget in US$. `component` is what
 a budget line funds, taken from its module; `grant_type` is the grant it sits in —
@@ -63,8 +63,7 @@ no key): the same lines are
 `https://fetch.theglobalfund.org/v4.2/odata/FinancialIndicators(indicatorName='Budget - Reference Rate',financialDatasetName='GrantBudget_ReferenceRate')`,
 with ids that resolve through the `Grants`, `Geographies`, `ActivityAreas` and
 `FinancialCategories` feeds (a budget line's `financialCategoryId` is the category's
-`hierarchyId`). The builder already uses one feed, `Geographies_PortfolioView`, for the
-portfolio region, which the CSV does not carry.
+`hierarchyId`).
 
 ## Tests
 

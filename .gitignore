@@ -8,3 +8,4 @@ logs/
 .pytest_cache/
 data/*.sqlite
 data/*.csv
+!data/gf_regions.csv

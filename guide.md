@@ -6,7 +6,7 @@ English. The data is public: "Grant Budgets – Reference Rate" from the
 
 #### What you can ask about
 
-**Where** country · continent · sub-continent · Global Fund region
+**Where** country · continent · sub-continent · Global Fund region (WCA, HIA1, HIA2, MENASEA, EECA, LAC, Asia)
 **What** component · module → intervention
 **How** investment landscape (level 1 → level 2) · cost category
 **Who** principal recipient · PR type · lead implementer

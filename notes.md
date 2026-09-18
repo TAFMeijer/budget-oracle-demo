@@ -129,13 +129,26 @@ names starting 'Multicountry'.
     continent      'Africa', 'Asia', 'Americas', 'Europe', 'Oceania'; 'Multicountry' for regional grants
     subcontinent   the UN sub-region: 'Western Africa', 'Eastern Africa', 'Middle Africa',
                    'Southern Africa', 'Northern Africa', 'South-Eastern Asia', 'Southern Asia', …
-    gf_region      the Global Fund's own portfolio grouping: 'West and Central Africa', 'Rest of
-                   Africa', 'Rest of the World'
+    gf_region      the Global Fund's grant-management regions, as codes:
+                   'WCA'      West and Central Africa
+                   'HIA1'     High Impact Africa 1 (Burkina Faso, Congo (Democratic Republic),
+                              Côte d'Ivoire, Ghana, Mali, Nigeria)
+                   'HIA2'     High Impact Africa 2 (Ethiopia, Kenya, Mozambique, South Africa,
+                              Tanzania, Uganda, Zambia, Zimbabwe, …)
+                   'MENASEA'  Middle East and North Africa plus the rest of Southern and Eastern
+                              Africa (Malawi, Rwanda, Madagascar, Sudan, Angola, Namibia, Morocco, …)
+                   'EECA'     Eastern Europe and Central Asia
+                   'LAC'      Latin America and the Caribbean
+                   'Asia'     Asia and the Pacific
 
-"Africa", "Asia" -> continent. "West Africa", "Southern Africa", "South-East Asia" ->
-subcontinent. "West and Central Africa", "WCA", "the Global Fund's regions" -> gf_region.
-"Sub-Saharan Africa" = continent 'Africa' without subcontinent 'Northern Africa'. "By region"
-with nothing more -> subcontinent, and say so in the note. There is no income group in this data.
+"GF region", "Global Fund region", "region" or "by region" with nothing more -> gf_region, and
+say so in the note. Users name these regions by code or in words: "West and Central Africa" ->
+'WCA'; "High Impact Africa" -> both 'HIA1' and 'HIA2'; "Eastern Europe" -> 'EECA'; "Latin
+America" -> 'LAC'. A high-impact country is NOT in 'WCA' or 'MENASEA' even when it lies there
+geographically (Nigeria is 'HIA1'), so for geography proper use the other two columns:
+"Africa", "Asia" -> continent; "West Africa", "Western Africa", "Southern Africa", "South-East
+Asia" -> subcontinent. "Sub-Saharan Africa" = continent 'Africa' without subcontinent
+'Northern Africa'. There is no income group in this data.
 
 ## Who implements
 
