@@ -349,7 +349,8 @@ with st.sidebar:
 def render_result(out, idx: int) -> None:
     """Everything an answer bubble holds: count, SQL, table/chart, download, observations, feedback."""
     df: pd.DataFrame = out.df
-    note = f" · corrected {out.repairs} time{'s' if out.repairs > 1 else ''} by the guard" if out.repairs else ""
+    note = (f" · corrected {out.repairs} time{'s' if out.repairs > 1 else ''} by the guard"
+            if out.repairs and settings.show_sql else "")
     st.markdown(f"**{len(df):,} rows**" + note)
     if out.note:
         # The reading the model made, in its own words — the one place a confident answer says
@@ -492,7 +493,8 @@ if messages:
                   help="Starts over. The current conversation is lost — download any tables you want to keep first."):
         start_new_conversation()
 
-render_context_meter(usage, full or misconfigured)
+if settings.show_sql or full or misconfigured:        # a public visitor only hears about the context when it is full
+    render_context_meter(usage, full or misconfigured)
 if misconfigured:
     st.warning(f"The schema and rules alone need ~{usage['base']:,} tokens, more than the "
                f"{usage['limit']:,}-token window in CONTEXT_WINDOW. Set CONTEXT_WINDOW to the context "
@@ -584,7 +586,8 @@ if allowed_emails is not None:
                "Only SELECT statements are permitted against the database.")
 else:
     st.caption("Every question, query and outcome is written to the audit log (no user identifiers). "
-               "Only SELECT statements are permitted against the database.")
+               "Only SELECT statements are permitted against the database." if settings.show_sql else
+               "Questions and answers are logged without anything that identifies you, to improve the demo.")
 
 # Fired after the rerun that follows an answer, so the component actually mounts. Popping it
 # means one notification per answer, never a repeat on later reruns.
