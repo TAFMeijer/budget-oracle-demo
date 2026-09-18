@@ -1,0 +1,10 @@
+streamlit>=1.49
+pandas>=2.0
+plotly>=5.20
+sqlalchemy>=2.0
+sqlglot>=25.0
+openpyxl>=3.1
+requests>=2.31
+python-dotenv>=1.0
+# production SQL Server driver (not needed for the SQLite demo):
+# pymssql>=2.3

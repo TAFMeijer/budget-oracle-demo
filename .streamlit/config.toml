@@ -1,0 +1,18 @@
+[server]
+port = 8602
+# Served under a path prefix so it can sit behind a reverse proxy or tunnel next to other things.
+baseUrlPath = "budget-oracle"
+# Loopback only: reach it from this machine or through the proxy in front of it.
+address = "127.0.0.1"
+
+[client]
+# A public deployment: an uncaught exception must not show visitors a traceback.
+showErrorDetails = "none"
+toolbarMode = "minimal"
+
+[theme]
+base = "light"
+primaryColor = "#0F6E8C"
+
+[browser]
+gatherUsageStats = false
