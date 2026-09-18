@@ -1,6 +1,7 @@
 Total budget by component
 Top 10 countries by budget
 RSSH budget by module
-How did the HRH budget change between cycles?
+How did the HRH budget change between grant cycles?
 Malaria budget in Western Africa by cost category
-Budget for Kenya by year
+Budget by investment landscape, level 1 and level 2
+Which types of principal recipient manage the HIV budget?

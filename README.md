@@ -32,7 +32,9 @@ address, in total, in concurrent answers and in question length — see `.env.ex
 git clone https://github.com/TAFMeijer/budget-oracle-demo.git && cd budget-oracle-demo
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 cp .env.example .env
-.venv/bin/python data/fetch_gf_budgets.py     # about a minute: builds data/gf_budgets.sqlite
+# download "Grant Budgets - Reference Rate" (CSV) from the Data Set tab of
+# https://data-service.theglobalfund.org/downloads into data/ or ~/Downloads, then:
+.venv/bin/python data/build_gf_budgets.py     # a few seconds: builds data/gf_budgets.sqlite
 ./start.sh                                    # http://localhost:8602/budget-oracle
 ```
 
@@ -43,19 +45,26 @@ app without any model for a look around.
 
 ## The data
 
-`data/fetch_gf_budgets.py` reads the "Budget - Reference Rate" dataset from the Global Fund's
-public API (`https://fetch.theglobalfund.org/v4.2/odata`, no key needed), resolves its ids to
-names and writes one table, `grant_budgets`: grant, implementation period, funding cycle,
-country, region, grant type, component, module, intervention, cost group, cost category, year,
-budget in US$. `component` is what a budget line funds, taken from its module; `grant_type` is
-the grant it sits in — health-system modules live mostly inside disease grants, so they differ. About 172,000 lines, 450 grants, 137 countries, calendar years 2017–2028 across the
-2017-2019, 2020-2022 and 2023-2025 funding cycles.
+`data/build_gf_budgets.py` turns the Global Fund's published CSV into one table,
+`grant_budgets`, with plain column names: country, continent, sub-continent and the Global
+Fund's portfolio region; grant, implementation period, status, grant cycle and grant type;
+principal recipient, its type and the lead implementer; component, module and intervention;
+investment landscape level 1 and 2 and cost category; year; budget in US$. `component` is what
+a budget line funds, taken from its module; `grant_type` is the grant it sits in —
+health-system modules live mostly inside disease grants, so they differ. About 172,000 lines,
+450 grants, 137 countries, calendar years 2017–2028 across Grant Cycles 5, 6 and 7.
 
-Two things to know. The funding cycle is derived from when an implementation period starts;
-the API publishes none for a budget line. And the API does not publish the activity area of
-every line: about 7% of the 2017-2019 budget and 25% of 2020-2022 carry the module
-"Unspecified", so module totals for those cycles undercount while country, component and cost
-totals are complete. The assistant says so when it matters.
+The published data leaves the module of some lines empty: about 7% of the Grant Cycle 5 budget
+and 25% of Grant Cycle 6 carry "Unspecified", so module totals for those cycles undercount
+while country, grant and cost totals are complete. The assistant says so when it matters.
+
+**From the API instead.** The CSV is the Global Fund's own export of its public API (OData,
+no key): the same lines are
+`https://fetch.theglobalfund.org/v4.2/odata/FinancialIndicators(indicatorName='Budget - Reference Rate',financialDatasetName='GrantBudget_ReferenceRate')`,
+with ids that resolve through the `Grants`, `Geographies`, `ActivityAreas` and
+`FinancialCategories` feeds (a budget line's `financialCategoryId` is the category's
+`hierarchyId`). The builder already uses one feed, `Geographies_PortfolioView`, for the
+portfolio region, which the CSV does not carry.
 
 ## Tests
 

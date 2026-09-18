@@ -10,6 +10,6 @@ fi
 # shellcheck disable=SC1091
 source .venv/bin/activate
 [ -f .env ] || { echo "No .env — copy .env.example to .env first."; exit 1; }
-[ -f data/gf_budgets.sqlite ] || python data/fetch_gf_budgets.py
+[ -f data/gf_budgets.sqlite ] || python data/build_gf_budgets.py
 python refresh_schema.py
 exec streamlit run app.py
